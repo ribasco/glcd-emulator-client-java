@@ -45,22 +45,33 @@ public class GlcdEmulatorClienIT {
         AtomicBoolean shutdown = new AtomicBoolean(false);
 
         try (GlcdEmulatorClient driver = new GlcdEmulatorClient(config, dataTransport))  {
+            boolean show = true;
+            long prevMillis = 0;
             while (!shutdown.get()) {
                 driver.clearBuffer();
                 drawU8G2Logo(driver);
                 drawText(driver);
-                drawRpiLogo(driver);
+
+                long curMillis = System.currentTimeMillis();
+                if ((curMillis - prevMillis) > 500) {
+                    show = !show;
+                    prevMillis = curMillis;
+                }
+
+                if (show) {
+                    drawRpiLogo(driver);
+                }
                 driver.sendBuffer();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
             shutdown.set(true);
         }
     }
 
     private int count = 0;
 
-    private int xpos = 0;
+    private int xpos = 0, ypos = 0;
 
     private void drawText(GraphicsDisplayDriver driver) {
         if (count > 100)
@@ -72,8 +83,10 @@ public class GlcdEmulatorClienIT {
 
     private void drawRpiLogo(GraphicsDisplayDriver driver) {
         driver.setBitmapMode(1);
-        if (raspberryPiLogo != null)
+        if (raspberryPiLogo != null) {
             driver.drawXBM(40, -5, 95, 74, raspberryPiLogo.getData());
+            //ypos &= 0x3f;
+        }
     }
 
     private void drawU8G2Logo(GraphicsDisplayDriver driver) {
