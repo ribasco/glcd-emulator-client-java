@@ -34,7 +34,7 @@
     </appender>
 
     <appender name="file-info" class="ch.qos.logback.core.FileAppender">
-        <file>./logs/pi-display-main.log</file>
+        <file>./logs/emulator-client.log</file>
         <append>false</append>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>DEBUG</level>
@@ -45,8 +45,8 @@
     </appender>
 
     <appender name="file-error" class="ch.qos.logback.core.FileAppender">
-        <file>./logs/pi-display-error.log</file>
-        <append>false</append>
+        <file>./logs/emulator-client-error.log</file>
+        <append>true</append>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
         </filter>
@@ -61,6 +61,5 @@
         <appender-ref ref="file-error"/>
     </root>
 
-    <logger name="com.ibasco.pidisplay.core" level="DEBUG"/>
-    <logger name="com.ibasco.pidisplay.core.utils.PidispJniExtractor" level="DEBUG"/>
+    <logger name="com.ibasco.glcdemu.client" level="DEBUG"/>
 </configuration>
