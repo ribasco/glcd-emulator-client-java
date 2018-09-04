@@ -16,12 +16,9 @@ public class TcpTransport implements Transport {
 
     @Override
     public void open() throws IOException {
-
-        String ipAddress = Objects.requireNonNull(options.get(TcpTransporOptions.IP_ADDRESS), "IP address cannot be null");
-
+        String ipAddress = options.get(TcpTransporOptions.IP_ADDRESS);
         if (StringUtils.isBlank(ipAddress))
-            throw new IOException("IP address cannot be black");
-
+            throw new IOException("IP address cannot be empty");
         int port = Objects.requireNonNull(options.get(TcpTransporOptions.PORT_NUMBER), "Port cannot be null");
         InetSocketAddress address = new InetSocketAddress(ipAddress, port);
         channel = SocketChannel.open(address);
