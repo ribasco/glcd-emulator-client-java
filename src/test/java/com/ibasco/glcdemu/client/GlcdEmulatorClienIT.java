@@ -35,12 +35,12 @@ public class GlcdEmulatorClienIT {
     private void run() throws Exception {
         //Configure GLCD
         GlcdConfig config = new GlcdConfig();
-        config.setDisplay(Glcd.ST7920.D_128x64);
+        config.setDisplay(Glcd.ST7920.D_192x32);
         config.setCommInterface(GlcdCommInterface.SPI_HW_4WIRE_ST7920);
         config.setRotation(GlcdRotation.ROTATION_NONE);
 
         Transport dataTransport = new TcpTransport();
-        dataTransport.setOption(TcpTransporOptions.IP_ADDRESS, "localhost");
+        dataTransport.setOption(TcpTransporOptions.IP_ADDRESS, "192.168.1.24");
         dataTransport.setOption(TcpTransporOptions.PORT_NUMBER, 3580);
         AtomicBoolean shutdown = new AtomicBoolean(false);
 
@@ -77,8 +77,9 @@ public class GlcdEmulatorClienIT {
         if (count > 100)
             count = 0;
         driver.setFont(GlcdFont.FONT_ASTRAGAL_NBP_TR);
-        driver.drawString(xpos++, 50, "Count: " + count++);
-        xpos &= 0x7f;
+        driver.drawString(xpos++, 10, "Count: " + count++);
+        if (xpos == 192)
+            xpos = 0;
     }
 
     private void drawRpiLogo(GraphicsDisplayDriver driver) {
