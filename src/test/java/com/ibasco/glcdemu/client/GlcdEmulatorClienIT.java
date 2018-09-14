@@ -21,6 +21,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class GlcdEmulatorClienIT {
     private static final Logger log = LoggerFactory.getLogger(GlcdEmulatorClienIT.class);
 
+    private int count = 0;
+
+    private int xpos = 0, ypos = 0;
+
     private XBMUtils.XBMData raspberryPiLogo;
 
     private GlcdEmulatorClienIT() throws Exception {
@@ -35,12 +39,12 @@ public class GlcdEmulatorClienIT {
     private void run() throws Exception {
         //Configure GLCD
         GlcdConfig config = new GlcdConfig();
-        config.setDisplay(Glcd.ST7920.D_192x32);
+        config.setDisplay(Glcd.ST7920.D_128x64);
         config.setCommInterface(GlcdCommInterface.SPI_HW_4WIRE_ST7920);
         config.setRotation(GlcdRotation.ROTATION_NONE);
 
         Transport dataTransport = new TcpTransport();
-        dataTransport.setOption(TcpTransporOptions.IP_ADDRESS, "192.168.1.24");
+        dataTransport.setOption(TcpTransporOptions.IP_ADDRESS, "127.0.0.1");
         dataTransport.setOption(TcpTransporOptions.PORT_NUMBER, 3580);
         AtomicBoolean shutdown = new AtomicBoolean(false);
 
@@ -69,25 +73,19 @@ public class GlcdEmulatorClienIT {
         }
     }
 
-    private int count = 0;
-
-    private int xpos = 0, ypos = 0;
-
     private void drawText(GraphicsDisplayDriver driver) {
         if (count > 100)
             count = 0;
         driver.setFont(GlcdFont.FONT_ASTRAGAL_NBP_TR);
-        driver.drawString(xpos++, 10, "Count: " + count++);
+        driver.drawString(xpos++, 40, "Count: " + count++);
         if (xpos == 192)
             xpos = 0;
     }
 
     private void drawRpiLogo(GraphicsDisplayDriver driver) {
         driver.setBitmapMode(1);
-        if (raspberryPiLogo != null) {
+        if (raspberryPiLogo != null)
             driver.drawXBM(40, -5, 95, 74, raspberryPiLogo.getData());
-            //ypos &= 0x3f;
-        }
     }
 
     private void drawU8G2Logo(GraphicsDisplayDriver driver) {

@@ -18,10 +18,6 @@ public:
 private:
     static uint8_t byte_cb(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
     static uint8_t gpio_cb(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr);
-    static void sendMessage(uint8_t msg, uint8_t value) {
-        Serial.write(msg);
-        Serial.write(value);
-    }
 };
 
 #endif //CPP_U8G2EMULATORCLIENT_H
