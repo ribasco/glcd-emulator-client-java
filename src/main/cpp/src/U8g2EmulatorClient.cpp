@@ -23,12 +23,19 @@ uint8_t U8g2EmulatorClient::byte_cb(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, 
             size--;
             Serial.write(value);
         }
+        Serial.flush();
     }
-    return 0;
+    return 1;
 }
 
 uint8_t U8g2EmulatorClient::gpio_cb(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
-    return 0;
+    return 1;
+}
+
+void U8g2EmulatorClient::sendBuffer(void) {
+    Serial.write(MSG_START);
+    U8G2::sendBuffer();
+    Serial.write(MSG_START);
 }
 
 

@@ -17,6 +17,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 
+/**
+ * <p>A special graphics display driver which is primarily used for communicating with the graphics display emulator.
+ * A data {@link Transport} is used for sending the instructions to the emulator.</p>
+ *
+ * @author Rafael Ibasco
+ */
 public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
 
     private static final Logger log = LoggerFactory.getLogger(GlcdEmulatorClient.class);
@@ -25,6 +31,14 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
 
     private Transport transport;
 
+    /**
+     * Creates a new emulator client with the given transport
+     *
+     * @param config
+     *         The {@link GlcdConfig} associated with this instance
+     * @param transport
+     *         The data {@link Transport} that is responsible for sending/receiving data to/from the emulator
+     */
     public GlcdEmulatorClient(GlcdConfig config, Transport transport) {
         super(config);
         this.transport = Objects.requireNonNull(transport, "Transport cannot be null");
@@ -66,7 +80,7 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
 
     private void writeToBuffer(U8g2MessageEvent event) {
         buffer.clear();
-        buffer.put((byte)event.getMessage().getCode());
+        buffer.put((byte) event.getMessage().getCode());
         buffer.put((byte) event.getValue());
         buffer.flip();
     }
@@ -89,7 +103,7 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
 
     @Override
     protected void finalize() throws Throwable {
-       close();
+        close();
         super.finalize();
     }
 }
