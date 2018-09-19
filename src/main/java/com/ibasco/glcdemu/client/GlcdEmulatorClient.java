@@ -62,14 +62,15 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
         try {
             sendStart();
             super.sendBuffer();
-            sendEnd();
+            //sendEnd();
         } catch (IOException e) {
             throw new RuntimeException("Error occured while trying to send u8g2 message", e);
         }
     }
 
     private void sendStart() throws IOException {
-        writeToBuffer(new U8g2ByteEvent(U8g2Message.U8X8_MSG_START, 1));
+        //writeToBuffer(new U8g2ByteEvent(U8g2Message.U8X8_MSG_START, 1));
+        writeToBuffer(U8g2Message.U8X8_MSG_START.getCode());
         transport.send(buffer);
     }
 
@@ -85,11 +86,22 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
         buffer.flip();
     }
 
+    private void writeToBuffer(int value) {
+        buffer.clear();
+        buffer.put((byte) value);
+        buffer.flip();
+    }
+
     @Override
     protected void onByteEvent(U8g2ByteEvent event) {
         try {
-            writeToBuffer(event);
-            transport.send(buffer);
+            switch (event.getMessage()) {
+                case U8X8_MSG_BYTE_SEND: {
+                    writeToBuffer(event.getValue());
+                    transport.send(buffer);
+                    break;
+                }
+            }
         } catch (IOException e) {
             log.error("Error occured while trying to send u8g2 message", e);
         }

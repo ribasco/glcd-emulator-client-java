@@ -44,7 +44,7 @@ public class GlcdEmulatorClienIT {
         config.setRotation(GlcdRotation.ROTATION_NONE);
 
         Transport dataTransport = new TcpTransport();
-        dataTransport.setOption(TcpTransporOptions.IP_ADDRESS, "127.0.0.1");
+        dataTransport.setOption(TcpTransporOptions.IP_ADDRESS, "192.168.1.24");
         dataTransport.setOption(TcpTransporOptions.PORT_NUMBER, 3580);
         AtomicBoolean shutdown = new AtomicBoolean(false);
 

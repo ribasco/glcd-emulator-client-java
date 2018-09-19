@@ -8,11 +8,16 @@
 #include <U8g2lib.h>
 
 #define MSG_START 0xFE
-#define MSG_END 0xFF
+
+typedef void (*u8g2_setup_cb)(u8g2_t *u8g2, const u8g2_cb_t *rotation, u8x8_msg_cb byte_cb,
+                              u8x8_msg_cb gpio_and_delay_cb);
+
+typedef void (*u8g2_bytesend_cb)(uint8_t arg_int, void *arg_ptr);
 
 class U8g2EmulatorClient : public U8G2 {
 public:
-    explicit U8g2EmulatorClient(const u8g2_cb_t *rotation);
+    static u8g2_bytesend_cb bytecb;
+    U8g2EmulatorClient(const u8g2_cb_t *rotation, u8g2_setup_cb setup_cb, u8g2_bytesend_cb bytesend_cb);
     void sendBuffer(void);
 
 private:
