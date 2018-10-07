@@ -12,11 +12,33 @@ U8g2EmulatorClient::U8g2EmulatorClient(const u8g2_cb_t *rotation, u8g2_setup_cb 
 }
 
 uint8_t U8g2EmulatorClient::byte_cb(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
-    if (msg == U8X8_MSG_BYTE_SEND) {
-        U8g2EmulatorClient::bytecb(arg_int, arg_ptr);
-        return 1;
+    switch (msg) {
+        case U8X8_MSG_BYTE_SET_DC: {
+            if (arg_int == 0) {
+                bytecb(MSG_DC_0);
+            } else if (arg_int == 1) {
+                bytecb(MSG_DC_1);
+            }
+            break;
+        }
+        case U8X8_MSG_BYTE_SEND: {
+            uint8_t value;
+            uint8_t size = arg_int;
+            uint8_t *data = (uint8_t *) arg_ptr;
+            bytecb(MSG_BYTE_SEND);
+            bytecb(size);
+            while (size > 0) {
+                value = *data;
+                data++;
+                size--;
+                bytecb(value);
+            }
+            break;
+        }
+        default:
+            return 0;
     }
-    return 0;
+    return 1;
 }
 
 uint8_t U8g2EmulatorClient::gpio_cb(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, void *arg_ptr) {
@@ -25,7 +47,7 @@ uint8_t U8g2EmulatorClient::gpio_cb(u8x8_t *u8x8, uint8_t msg, uint8_t arg_int, 
 
 void U8g2EmulatorClient::sendBuffer() {
     uint8_t startByte = MSG_START;
-    U8g2EmulatorClient::bytecb(1, &startByte);
+    bytecb(startByte);
     U8G2::sendBuffer();
 }
 

@@ -7,7 +7,7 @@
 
 U8g2EmulatorClient *u8g2;
 
-void sendToSerial(uint8_t arg_int, void *arg_ptr);
+void sendByteToSerial(uint8_t data);
 
 void drawU8G2Logo(U8G2 *u8g2, u8g2_uint_t offset = 0);
 
@@ -15,7 +15,9 @@ u8g2_uint_t x = 0;
 
 void setup() {
     Serial.begin(2000000);
-    u8g2 = new U8g2EmulatorClient(U8G2_R0, u8g2_Setup_st7920_s_128x64_f, sendToSerial);
+    //parallel: u8g2_Setup_st7920_p_128x64_f
+    //spi: u8g2_Setup_st7920_s_128x64_f
+    u8g2 = new U8g2EmulatorClient(U8G2_R0, u8g2_Setup_st7920_p_128x64_f, sendByteToSerial);
     u8g2->begin();
     u8g2->setFont(u8g2_font_10x20_t_arabic);
 }
@@ -23,21 +25,15 @@ void setup() {
 void loop() {
     u8g2->clearBuffer();
     drawU8G2Logo(u8g2, x++);
+    u8g2->setFont(u8g2_font_5x8_tr);
+    u8g2->drawStr(10, 40, "Hello YouTube");
     u8g2->sendBuffer();
     if (x > 128)
         x = 0;
 }
 
-void sendToSerial(uint8_t arg_int, void *arg_ptr) {
-    uint8_t value;
-    uint8_t size = arg_int;
-    uint8_t *data = (uint8_t *) arg_ptr;
-    while (size > 0) {
-        value = *data;
-        data++;
-        size--;
-        Serial.write(value);
-    }
+void sendByteToSerial(uint8_t data) {
+    Serial.write(data);
 }
 
 void drawU8G2Logo(U8G2 *u8g2, u8g2_uint_t offset) {

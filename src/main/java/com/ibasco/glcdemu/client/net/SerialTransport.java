@@ -20,6 +20,11 @@ public class SerialTransport implements Transport {
     }
 
     @Override
+    public void send(byte data) throws IOException {
+
+    }
+
+    @Override
     public int receive(ByteBuffer buffer) throws IOException {
         return 0;
     }
@@ -27,5 +32,10 @@ public class SerialTransport implements Transport {
     @Override
     public <T> void setOption(TransportOption<T> option, T value) {
 
+    }
+
+    @Override
+    public <T> T getOption(TransportOption<T> option) {
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.ibasco.glcdemu.client;
 
+import com.ibasco.glcdemu.client.net.GeneralOptions;
 import com.ibasco.glcdemu.client.net.TcpTransporOptions;
 import com.ibasco.glcdemu.client.net.TcpTransport;
 import com.ibasco.glcdemu.client.net.Transport;
@@ -7,7 +8,7 @@ import com.ibasco.pidisplay.core.drivers.GraphicsDisplayDriver;
 import com.ibasco.pidisplay.core.util.XBMUtils;
 import com.ibasco.pidisplay.drivers.glcd.Glcd;
 import com.ibasco.pidisplay.drivers.glcd.GlcdConfig;
-import com.ibasco.pidisplay.drivers.glcd.enums.GlcdCommInterface;
+import com.ibasco.pidisplay.drivers.glcd.enums.GlcdBusInterface;
 import com.ibasco.pidisplay.drivers.glcd.enums.GlcdFont;
 import com.ibasco.pidisplay.drivers.glcd.enums.GlcdRotation;
 import org.slf4j.Logger;
@@ -39,18 +40,21 @@ public class GlcdEmulatorClienIT {
     private void run() throws Exception {
         //Configure GLCD
         GlcdConfig config = new GlcdConfig();
-        config.setDisplay(Glcd.ST7920.D_128x64);
-        config.setCommInterface(GlcdCommInterface.SPI_HW_4WIRE_ST7920);
+        config.setDisplay(Glcd.ST7920.D_128x64); //Glcd.RA8835.D_320x240
+        config.setBusInterface(GlcdBusInterface.PARALLEL_8080);
         config.setRotation(GlcdRotation.ROTATION_NONE);
 
         Transport dataTransport = new TcpTransport();
         dataTransport.setOption(TcpTransporOptions.IP_ADDRESS, "192.168.1.24");
         dataTransport.setOption(TcpTransporOptions.PORT_NUMBER, 3580);
+        dataTransport.setOption(GeneralOptions.DEBUG_OUTPUT, false);
+
         AtomicBoolean shutdown = new AtomicBoolean(false);
 
         try (GlcdEmulatorClient driver = new GlcdEmulatorClient(config, dataTransport))  {
             boolean show = true;
             long prevMillis = 0;
+            int ctr = 0;
             while (!shutdown.get()) {
                 driver.clearBuffer();
                 drawU8G2Logo(driver);

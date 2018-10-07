@@ -14,6 +14,8 @@ public class TcpTransport implements Transport {
 
     private TransportOptions options = new TransportOptions();
 
+    private ByteBuffer tmp = ByteBuffer.allocate(1);
+
     @Override
     public void open() throws IOException {
         String ipAddress = options.get(TcpTransporOptions.IP_ADDRESS);
@@ -30,6 +32,14 @@ public class TcpTransport implements Transport {
     }
 
     @Override
+    public synchronized void send(byte data) throws IOException {
+        tmp.clear();
+        tmp.put(data);
+        tmp.flip();
+        channel.write(tmp);
+    }
+
+    @Override
     public int receive(ByteBuffer buffer) throws IOException {
         return channel.read(buffer);
     }
@@ -40,7 +50,13 @@ public class TcpTransport implements Transport {
     }
 
     @Override
+    public <T> T getOption(TransportOption<T> option) {
+        return options.get(option);
+    }
+
+    @Override
     public void close() throws IOException {
-        channel.close();
+        if (channel != null)
+            channel.close();
     }
 }
