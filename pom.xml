@@ -6,31 +6,540 @@
 
     <groupId>com.ibasco.glcdemu.client</groupId>
     <artifactId>glcd-emulator-client</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <name>GLCD Emulator Client</name>
+    <description>Client library for the glcd emulator project</description>
+    <inceptionYear>2018</inceptionYear>
+
+    <organization>
+        <name>Rafael Ibasco</name>
+        <url>https://github.com/ribasco</url>
+    </organization>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <license.licenseName>gpl_v3</license.licenseName>
+        <ant.version>1.10.5</ant.version>
+        <junit.version>5.3.1</junit.version>
+        <sl4j.version>1.7.25</sl4j.version>
+        <mockito.version>2.23.0</mockito.version>
     </properties>
+
+    <!-- Source Control -->
+    <scm>
+        <connection>scm:git:git://github.com/ribasco/glcd-emulator-client-java.git</connection>
+        <developerConnection>scm:git:git@github.com:ribasco/glcd-emulator-client-java.git</developerConnection>
+        <url>https://github.com/ribasco/glcd-emulator-client-java</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- License Information -->
+    <licenses>
+        <license>
+            <name>GNU General Public License (GPL) version 3.0</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- Developer Information -->
+    <developers>
+        <developer>
+            <name>Rafael Ibasco</name>
+            <url>https://github.com/ribasco</url>
+            <email>ribasco@gmail.com</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!-- Issue management -->
+    <issueManagement>
+        <url>https://github.com/ribasco/glcd-emulator-client-java/issues</url>
+        <system>github</system>
+    </issueManagement>
+
+    <!-- Continuous Integration -->
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/ribasco/glcd-emulator-client-java</url>
+    </ciManagement>
+
+    <!-- Distribution management -->
+    <distributionManagement>
+        <repository>
+            <id>${dm.repo.id}</id>
+            <name>${dm.repo.name}</name>
+            <url>${dm.repo.release.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>${dm.repo.id}</id>
+            <name>${dm.repo.snapshots.name}</name>
+            <url>${dm.repo.snapshots.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <profiles>
+        <!-- Disable doclint for java 8 -->
+        <profile>
+            <id>disable-java8-doclint</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalOptions>-Xdoclint:none</additionalOptions>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <additionalOptions>-Xdoclint:none</additionalOptions>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+        <!-- Only activate these plugins on release (source, javadoc, gpg) -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- SOURCE Plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>aggregate-sources</id>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <includes>
+                                <include>**/*.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                    <!-- JAVADOC Plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>aggregate-javadocs</id>
+                                <goals>
+                                    <goal>aggregate-jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- GPG Plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.1</version>
+                    <configuration>
+                        <includes>
+                            <include>**/Test*.java</include>
+                            <include>**/*Test.java</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.6.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <fork>true</fork>
+                        <verbose>false</verbose>
+                        <debug>false</debug>
+                        <optimize>true</optimize>
+                        <showDeprecation>true</showDeprecation>
+                        <showWarnings>false</showWarnings>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.8</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>${ant.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                    <configuration>
+                        <installAtEnd>true</installAtEnd>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                    <configuration>
+                        <deployAtEnd>true</deployAtEnd>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <releaseProfiles>release</releaseProfiles>
+                        <preparationGoals>clean install</preparationGoals>
+                        <tagNameFormat>ucgd-client-@{project.version}</tagNameFormat>
+                        <checkModificationExcludes>
+                            <checkModificationExclude>pom.xml</checkModificationExclude>
+                        </checkModificationExcludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>native/modules/graphics/src/main/cpp/utils/build/**</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>native/modules/graphics/src/main/cpp/utils/build/**</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                    <configuration>
+                        <!-- This is necessary for gpg to not try to use the pinentry programs -->
+                        <gpgArguments>
+                            <arg>--pinentry-mode</arg>
+                            <arg>loopback</arg>
+                        </gpgArguments>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>1.11.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+                <!-- License Plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>1.16</version>
+                    <executions>
+                        <execution>
+                            <id>append-license-file-headers</id>
+                            <goals>
+                                <goal>update-file-header</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                            <configuration>
+                                <descriptionTemplate>${project.basedir}/scripts/license/template.ftl</descriptionTemplate>
+                                <canUpdateCopyright>true</canUpdateCopyright>
+                                <canUpdateDescription>true</canUpdateDescription>
+                                <canUpdateLicense>true</canUpdateLicense>
+                                <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                                <processStartTag>========================START=================================
+                                </processStartTag>
+                                <processEndTag>=========================END==================================
+                                </processEndTag>
+                                <includes>
+                                    <include>**/*.java</include>
+                                </includes>
+                                <roots>
+                                    <root>src/main/java</root>
+                                    <root>src/test/java</root>
+                                </roots>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-enforcer-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M2</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <!-- Surefire plugin (unit-testing) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <!-- Generate license file -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>update-project-license</id>
+                        <goals>
+                            <goal>update-project-license</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <licenseName>lgpl_v3</licenseName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>append-license-file-headers</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <descriptionTemplate>${project.basedir}/scripts/license/template.ftl</descriptionTemplate>
+                        </configuration>
+                    </execution>
+                </executions>
+                <inherited>false</inherited>
+            </plugin>
+            <!-- RELEASE Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
+            <!-- VERSIONS Plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+            </plugin>
+            <!-- SCM Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <configuration>
+                    <goals>install</goals>
+                </configuration>
+            </plugin>
+            <!-- ENFORCER Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <!-- Enforce: Required properties (Deploy phase) -->
+                    <execution>
+                        <id>enforce</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireProperty>
+                                    <property>dm.repo.id</property>
+                                    <message>[DISTRIBUTION MANAGEMENT] Repository ID (dm.repo.id) has not been
+                                        specified.
+                                    </message>
+                                </requireProperty>
+                                <requireProperty>
+                                    <property>dm.repo.release.url</property>
+                                    <message>[DISTRIBUTION MANAGEMENT] Release URL (dm.repo.release.url) has not been
+                                        specified
+                                    </message>
+                                </requireProperty>
+                                <requireProperty>
+                                    <property>dm.repo.snapshots.url</property>
+                                    <message>[DISTRIBUTION MANAGEMENT] Snapshots URL (dm.repo.snapshots.url) has not
+                                        been specified
+                                    </message>
+                                </requireProperty>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <!-- Enforce: Required maven version (Validate phase) -->
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.0,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${sl4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
-            <groupId>com.ibasco.pidisplay</groupId>
-            <artifactId>pi-display-drivers-glcd</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
+            <groupId>com.ibasco.ucgdisplay</groupId>
+            <artifactId>ucgd-drivers-glcd</artifactId>
+            <version>(1.2.0,)</version>
         </dependency>
         <dependency>
             <groupId>com.fazecast</groupId>
             <artifactId>jSerialComm</artifactId>
             <version>[2.0.0,3.0.0)</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

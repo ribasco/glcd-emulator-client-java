@@ -1,16 +1,42 @@
+/*-
+ * ========================START=================================
+ * Organization: Rafael Ibasco
+ * Project: GLCD Emulator Client
+ * Filename: GlcdEmulatorClienIT.java
+ *
+ * ---------------------------------------------------------
+ * %%
+ * Copyright (C) 2018 Rafael Ibasco
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * =========================END==================================
+ */
 package com.ibasco.glcdemu.client;
 
 import com.ibasco.glcdemu.client.net.GeneralOptions;
 import com.ibasco.glcdemu.client.net.TcpTransporOptions;
 import com.ibasco.glcdemu.client.net.TcpTransport;
 import com.ibasco.glcdemu.client.net.Transport;
-import com.ibasco.pidisplay.core.drivers.GraphicsDisplayDriver;
-import com.ibasco.pidisplay.core.util.XBMUtils;
-import com.ibasco.pidisplay.drivers.glcd.Glcd;
-import com.ibasco.pidisplay.drivers.glcd.GlcdConfig;
-import com.ibasco.pidisplay.drivers.glcd.enums.GlcdBusInterface;
-import com.ibasco.pidisplay.drivers.glcd.enums.GlcdFont;
-import com.ibasco.pidisplay.drivers.glcd.enums.GlcdRotation;
+import com.ibasco.ucgdisplay.drivers.glcd.Glcd;
+import com.ibasco.ucgdisplay.drivers.glcd.GlcdConfig;
+import com.ibasco.ucgdisplay.drivers.glcd.U8g2DisplayDriver;
+import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdBusInterface;
+import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdFont;
+import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdRotation;
+import com.ibasco.ucgdisplay.drivers.glcd.utils.XBMData;
+import com.ibasco.ucgdisplay.drivers.glcd.utils.XBMUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +52,7 @@ public class GlcdEmulatorClienIT {
 
     private int xpos = 0, ypos = 0;
 
-    private XBMUtils.XBMData raspberryPiLogo;
+    private XBMData raspberryPiLogo;
 
     private GlcdEmulatorClienIT() throws Exception {
         URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("images/raspberrypi-small.xbm").toURI();
@@ -77,7 +103,7 @@ public class GlcdEmulatorClienIT {
         }
     }
 
-    private void drawText(GraphicsDisplayDriver driver) {
+    private void drawText(U8g2DisplayDriver driver) {
         if (count > 100)
             count = 0;
         driver.setFont(GlcdFont.FONT_ASTRAGAL_NBP_TR);
@@ -86,13 +112,13 @@ public class GlcdEmulatorClienIT {
             xpos = 0;
     }
 
-    private void drawRpiLogo(GraphicsDisplayDriver driver) {
+    private void drawRpiLogo(U8g2DisplayDriver driver) {
         driver.setBitmapMode(1);
         if (raspberryPiLogo != null)
             driver.drawXBM(40, -5, 95, 74, raspberryPiLogo.getData());
     }
 
-    private void drawU8G2Logo(GraphicsDisplayDriver driver) {
+    private void drawU8G2Logo(U8g2DisplayDriver driver) {
         driver.setFontMode(1);
 
         driver.setFontDirection(0);
