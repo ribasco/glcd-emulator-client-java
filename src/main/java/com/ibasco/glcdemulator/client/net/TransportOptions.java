@@ -2,7 +2,7 @@
  * ========================START=================================
  * Organization: Rafael Ibasco
  * Project: GLCD Emulator Client
- * Filename: TcpTransporOptions.java
+ * Filename: TransportOptions.java
  *
  * ---------------------------------------------------------
  * %%
@@ -23,39 +23,29 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * =========================END==================================
  */
-package com.ibasco.glcdemu.client.net;
+package com.ibasco.glcdemulator.client.net;
 
-public class TcpTransporOptions {
-    private TcpTransporOptions() {}
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-    public static final TransportOption<String> IP_ADDRESS = new BasicTcpTransportOption<>("IP_ADDRESS", String.class);
+@SuppressWarnings("unchecked")
+public class TransportOptions {
+    private Map<TransportOption, Object> options = new HashMap<>();
 
-    public static final TransportOption<Integer> PORT_NUMBER = new BasicTcpTransportOption<>("PORT_NUMBER", Integer.class);
+    TransportOptions() {
+    }
 
-    private static class BasicTcpTransportOption<T> implements TransportOption<T> {
+    <T> TransportOptions put(TransportOption<T> option, T value) {
+        options.put(option, value);
+        return this;
+    }
 
-        private String name;
+    <T> T get(TransportOption<T> option) {
+        return (T) options.get(option);
+    }
 
-        private Class<T> type;
-
-        private BasicTcpTransportOption(String name, Class<T> type) {
-            this.name = name;
-            this.type = type;
-        }
-
-        @Override
-        public String name() {
-            return name;
-        }
-
-        @Override
-        public Class<T> type() {
-            return type;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
+    public Set<TransportOption> getOptions() {
+        return options.keySet();
     }
 }

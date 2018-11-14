@@ -23,10 +23,10 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * =========================END==================================
  */
-package com.ibasco.glcdemu.client;
+package com.ibasco.glcdemulator.client;
 
-import com.ibasco.glcdemu.client.net.GeneralOptions;
-import com.ibasco.glcdemu.client.net.Transport;
+import com.ibasco.glcdemulator.client.net.GeneralOptions;
+import com.ibasco.glcdemulator.client.net.Transport;
 import com.ibasco.ucgdisplay.common.utils.ByteUtils;
 import com.ibasco.ucgdisplay.core.u8g2.U8g2ByteEvent;
 import com.ibasco.ucgdisplay.drivers.glcd.GlcdBaseDriver;

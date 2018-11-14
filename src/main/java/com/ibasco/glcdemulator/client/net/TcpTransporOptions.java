@@ -2,7 +2,7 @@
  * ========================START=================================
  * Organization: Rafael Ibasco
  * Project: GLCD Emulator Client
- * Filename: GeneralOptions.java
+ * Filename: TcpTransporOptions.java
  *
  * ---------------------------------------------------------
  * %%
@@ -23,22 +23,22 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * =========================END==================================
  */
-package com.ibasco.glcdemu.client.net;
+package com.ibasco.glcdemulator.client.net;
 
-public class GeneralOptions {
-    private GeneralOptions() {
+public class TcpTransporOptions {
+    private TcpTransporOptions() {}
 
-    }
+    public static final TransportOption<String> IP_ADDRESS = new BasicTcpTransportOption<>("IP_ADDRESS", String.class);
 
-    public static final TransportOption<Boolean> DEBUG_OUTPUT = new BasicGeneralOption<>("DEBUG_OUTPUT", Boolean.class);
+    public static final TransportOption<Integer> PORT_NUMBER = new BasicTcpTransportOption<>("PORT_NUMBER", Integer.class);
 
-    private static class BasicGeneralOption<T> implements TransportOption<T> {
+    private static class BasicTcpTransportOption<T> implements TransportOption<T> {
 
         private String name;
 
         private Class<T> type;
 
-        private BasicGeneralOption(String name, Class<T> type) {
+        private BasicTcpTransportOption(String name, Class<T> type) {
             this.name = name;
             this.type = type;
         }

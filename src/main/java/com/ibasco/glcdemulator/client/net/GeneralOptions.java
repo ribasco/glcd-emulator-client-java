@@ -2,7 +2,7 @@
  * ========================START=================================
  * Organization: Rafael Ibasco
  * Project: GLCD Emulator Client
- * Filename: TransportOptions.java
+ * Filename: GeneralOptions.java
  *
  * ---------------------------------------------------------
  * %%
@@ -23,29 +23,39 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * =========================END==================================
  */
-package com.ibasco.glcdemu.client.net;
+package com.ibasco.glcdemulator.client.net;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+public class GeneralOptions {
+    private GeneralOptions() {
 
-@SuppressWarnings("unchecked")
-public class TransportOptions {
-    private Map<TransportOption, Object> options = new HashMap<>();
-
-    TransportOptions() {
     }
 
-    <T> TransportOptions put(TransportOption<T> option, T value) {
-        options.put(option, value);
-        return this;
-    }
+    public static final TransportOption<Boolean> DEBUG_OUTPUT = new BasicGeneralOption<>("DEBUG_OUTPUT", Boolean.class);
 
-    <T> T get(TransportOption<T> option) {
-        return (T) options.get(option);
-    }
+    private static class BasicGeneralOption<T> implements TransportOption<T> {
 
-    public Set<TransportOption> getOptions() {
-        return options.keySet();
+        private String name;
+
+        private Class<T> type;
+
+        private BasicGeneralOption(String name, Class<T> type) {
+            this.name = name;
+            this.type = type;
+        }
+
+        @Override
+        public String name() {
+            return name;
+        }
+
+        @Override
+        public Class<T> type() {
+            return type;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }

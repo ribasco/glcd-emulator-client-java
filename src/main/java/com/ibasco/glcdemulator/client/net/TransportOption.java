@@ -23,7 +23,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * =========================END==================================
  */
-package com.ibasco.glcdemu.client.net;
+package com.ibasco.glcdemulator.client.net;
 
 public interface TransportOption<T> {
     String name();
