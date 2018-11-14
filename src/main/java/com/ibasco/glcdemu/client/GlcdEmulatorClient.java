@@ -42,19 +42,7 @@ import java.nio.ByteOrder;
 import java.util.Objects;
 
 /**
- * <p>A special graphics display driver which is primarily used for communicating with the graphics display emulator.
- * A data {@link Transport} is used for transmitting the instructions to the emulator.</p>
- *
- * <p>
- * <h2>Protocol specifications:</h2>
- *
- * <pre>
- * | Field     | Value                      | Type  | Size (Bytes) | Description                                                      |
- * |-----------|----------------------------|-------|--------------|------------------------------------------------------------------|
- * | Header    | 0xFE                       | byte  | 1            | Marks the start of the frame                                     |
- * | Mode      | Command = 0xF8 Data = 0xFA | byte  | 1            | Command/Data mode. Applies only for controllers using the DC pin |
- * | Data Size |                            | short | 2            | Size of the data. Applies only for controllers using DC          |
- * </pre>
+ * <p>Graphics LCD emulator client</p>
  *
  * @author Rafael Ibasco
  */
