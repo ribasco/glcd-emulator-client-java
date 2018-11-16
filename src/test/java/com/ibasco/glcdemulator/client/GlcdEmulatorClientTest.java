@@ -26,8 +26,6 @@
 package com.ibasco.glcdemulator.client;
 
 import com.ibasco.glcdemulator.client.net.Transport;
-import com.ibasco.ucgdisplay.core.u8g2.U8g2ByteEvent;
-import static com.ibasco.ucgdisplay.core.u8g2.U8g2Message.U8X8_MSG_BYTE_START_TRANSFER;
 import com.ibasco.ucgdisplay.drivers.glcd.Glcd;
 import com.ibasco.ucgdisplay.drivers.glcd.GlcdConfig;
 import com.ibasco.ucgdisplay.drivers.glcd.GlcdDriverAdapter;
@@ -41,7 +39,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,12 +58,12 @@ class GlcdEmulatorClientTest {
         updateValidConfig(config);
         GlcdEmulatorClient client = createClient(config);
 
-        doAnswer(invocation -> {
+        /*doAnswer(invocation -> {
             System.out.println("Answer: " + invocation);
             U8g2ByteEvent event = new U8g2ByteEvent(U8X8_MSG_BYTE_START_TRANSFER, 0);
             client.onByteEvent(event);
             return null;
-        }).when(mockAdapter).sendBuffer();
+        }).when(mockAdapter).sendBuffer();*/
 
         client.drawBox(0, 10, 20, 30);
         client.sendBuffer();
