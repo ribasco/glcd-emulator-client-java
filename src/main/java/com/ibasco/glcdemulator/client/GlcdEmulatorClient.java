@@ -174,9 +174,8 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
                 }
             }
         } catch (IOException e) {
-            throw new GlcdEmulatorClientException("Exception thrown during byte event processing", e);
-        } finally {
             reset();
+            throw new GlcdEmulatorClientException("Exception thrown during byte event processing", e);
         }
     }
 
