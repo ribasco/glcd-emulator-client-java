@@ -4,7 +4,7 @@
 
     <groupId>com.ibasco.glcdemulator</groupId>
     <artifactId>glcd-emulator-client</artifactId>
-    <version>0.1.0-alpha</version>
+    <version>0.1.1-alpha-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>GLCD Emulator Client</name>
     <description>Client library for the glcd emulator project</description>
@@ -31,7 +31,7 @@
         <connection>scm:git:git://github.com/ribasco/glcd-emulator-client-java.git</connection>
         <developerConnection>scm:git:git@github.com:ribasco/glcd-emulator-client-java.git</developerConnection>
         <url>https://github.com/ribasco/glcd-emulator-client-java</url>
-        <tag>glcdemu-client-0.1.0-alpha</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- License Information -->
