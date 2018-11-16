@@ -208,6 +208,21 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>add-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>src/examples/resources</directory>
+                                    <targetPath>examples</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>add-test-source</id>
                         <phase>process-resources</phase>
                         <goals>
@@ -222,7 +237,7 @@
                     </execution>
                     <execution>
                         <id>add-test-resource</id>
-                        <phase>process-resources</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>add-test-resource</goal>
                         </goals>
@@ -265,9 +280,9 @@
                     <optimize>true</optimize>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>false</showWarnings>
-                    <excludes>
+                    <!--<excludes>
                         <exclude>**/*Example.java</exclude>
-                    </excludes>
+                    </excludes>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -282,6 +297,10 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                     </archive>
+                    <excludes>
+                        <exclude>examples/**</exclude>
+                        <exclude>**/*Example.class</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>

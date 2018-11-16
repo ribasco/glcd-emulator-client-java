@@ -55,7 +55,7 @@ public class GlcdClientTcpExample {
     private XBMData raspberryPiLogo;
 
     private GlcdClientTcpExample() throws Exception {
-        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("raspberrypi-small.xbm").toURI();
+        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("examples/raspberrypi-small.xbm").toURI();
         raspberryPiLogo = XBMUtils.decodeXbmFile(new File(resRaspberryPiLogo));
     }
 
@@ -98,8 +98,8 @@ public class GlcdClientTcpExample {
                 driver.sendBuffer();
             }
         } catch (IOException e) {
-            log.error(e.getMessage(), e);
             shutdown.set(true);
+            throw new RuntimeException(e);
         }
     }
 
