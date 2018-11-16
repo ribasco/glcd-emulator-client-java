@@ -37,5 +37,5 @@
         <appender-ref ref="file-error"/>
     </root>
 
-    <logger name="com.ibasco.glcdemu.client" level="DEBUG"/>
+    <logger name="com.ibasco.glcdemulator.client" level="DEBUG"/>
 </configuration>

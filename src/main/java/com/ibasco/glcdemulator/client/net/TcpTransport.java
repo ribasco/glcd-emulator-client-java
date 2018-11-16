@@ -48,11 +48,17 @@ public class TcpTransport implements Transport {
             throw new IOException("IP address cannot be empty");
         int port = Objects.requireNonNull(options.get(TcpTransporOptions.PORT_NUMBER), "Port cannot be null");
         InetSocketAddress address = new InetSocketAddress(ipAddress, port);
-        channel = SocketChannel.open(address);
+        channel = createChannel(address);
+    }
+
+    SocketChannel createChannel(InetSocketAddress address) throws IOException {
+        return SocketChannel.open(address);
     }
 
     @Override
     public int send(ByteBuffer buffer) throws IOException {
+        if (buffer == null)
+            throw new IllegalArgumentException("Buffer cannot be null");
         return channel.write(buffer);
     }
 
@@ -66,6 +72,8 @@ public class TcpTransport implements Transport {
 
     @Override
     public int receive(ByteBuffer buffer) throws IOException {
+        if (buffer == null)
+            throw new IllegalArgumentException("Buffer cannot be null");
         return channel.read(buffer);
     }
 

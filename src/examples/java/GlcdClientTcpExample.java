@@ -23,8 +23,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * =========================END==================================
  */
-package com.ibasco.glcdemulator.client;
 
+import com.ibasco.glcdemulator.client.GlcdEmulatorClient;
 import com.ibasco.glcdemulator.client.net.GeneralOptions;
 import com.ibasco.glcdemulator.client.net.TcpTransporOptions;
 import com.ibasco.glcdemulator.client.net.TcpTransport;
@@ -45,8 +45,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GlcdEmulatorClienIT {
-    private static final Logger log = LoggerFactory.getLogger(GlcdEmulatorClienIT.class);
+public class GlcdClientTcpExample {
+    private static final Logger log = LoggerFactory.getLogger(GlcdClientTcpExample.class);
 
     private int count = 0;
 
@@ -54,13 +54,13 @@ public class GlcdEmulatorClienIT {
 
     private XBMData raspberryPiLogo;
 
-    private GlcdEmulatorClienIT() throws Exception {
-        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("images/raspberrypi-small.xbm").toURI();
+    private GlcdClientTcpExample() throws Exception {
+        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("raspberrypi-small.xbm").toURI();
         raspberryPiLogo = XBMUtils.decodeXbmFile(new File(resRaspberryPiLogo));
     }
 
     public static void main(String[] args) throws Exception {
-        new GlcdEmulatorClienIT().run();
+        new GlcdClientTcpExample().run();
     }
 
     private void run() throws Exception {
@@ -77,7 +77,7 @@ public class GlcdEmulatorClienIT {
 
         AtomicBoolean shutdown = new AtomicBoolean(false);
 
-        try (GlcdEmulatorClient driver = new GlcdEmulatorClient(config, dataTransport))  {
+        try (GlcdEmulatorClient driver = new GlcdEmulatorClient(config, dataTransport)) {
             boolean show = true;
             long prevMillis = 0;
             int ctr = 0;

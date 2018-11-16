@@ -31,6 +31,7 @@ import com.ibasco.ucgdisplay.common.utils.ByteUtils;
 import com.ibasco.ucgdisplay.core.u8g2.U8g2ByteEvent;
 import com.ibasco.ucgdisplay.drivers.glcd.GlcdBaseDriver;
 import com.ibasco.ucgdisplay.drivers.glcd.GlcdConfig;
+import com.ibasco.ucgdisplay.drivers.glcd.GlcdDriverAdapter;
 import com.ibasco.ucgdisplay.drivers.glcd.exceptions.GlcdDriverException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,15 +55,15 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
 
     private Transport transport;
 
-    private static final int MSG_START = 0xFE;
+    protected static final int MSG_START = 0xFE;
 
-    private static final int MSG_DC_0 = 0xE0;
+    protected static final int MSG_DC_0 = 0xE0;
 
-    private static final int MSG_DC_1 = 0xE8;
+    protected static final int MSG_DC_1 = 0xE8;
 
-    private static final int MSG_BYTE_SEND = 0xEC;
+    protected static final int MSG_BYTE_SEND = 0xEC;
 
-    private boolean debug;
+    private boolean debug = false;
 
     /**
      * Creates a new emulator client with the given transport
@@ -75,6 +76,16 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
     public GlcdEmulatorClient(GlcdConfig config, Transport transport) {
         super(config, true);
         this.debug = transport.getOption(GeneralOptions.DEBUG_OUTPUT, false);
+        initClient(transport);
+    }
+
+    /**
+     * <p>Initialize client with the given {@link Transport}</p>
+     *
+     * @param transport
+     *         The data transport for this instance (e.g. Serial/TCP)
+     */
+    private void initClient(Transport transport) {
         this.transport = Objects.requireNonNull(transport, "Transport cannot be null");
         try {
             if (!debug)
@@ -84,6 +95,12 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
         } catch (GlcdDriverException | IOException e) {
             throw new RuntimeException("Error during emulator client initialization", e);
         }
+    }
+
+    /** For unit-testing purposes only **/
+    GlcdEmulatorClient(GlcdConfig config, Transport transport, GlcdDriverAdapter adapter) {
+        super(config, true, null, adapter);
+        initClient(transport);
     }
 
     @Override
