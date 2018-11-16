@@ -11,6 +11,7 @@
     <name>GLCD Emulator Client</name>
     <description>Client library for the glcd emulator project</description>
     <inceptionYear>2018</inceptionYear>
+    <url>https://github.com/ribasco/glcd-emulator-client-java</url>
 
     <organization>
         <name>Rafael Ibasco</name>
