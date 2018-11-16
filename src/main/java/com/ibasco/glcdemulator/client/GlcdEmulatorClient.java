@@ -25,6 +25,7 @@
  */
 package com.ibasco.glcdemulator.client;
 
+import com.ibasco.glcdemulator.client.exceptions.GlcdEmulatorClientException;
 import com.ibasco.glcdemulator.client.net.GeneralOptions;
 import com.ibasco.glcdemulator.client.net.Transport;
 import com.ibasco.ucgdisplay.common.utils.ByteUtils;
@@ -93,7 +94,7 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
             buffer = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN);
             initialize();
         } catch (GlcdDriverException | IOException e) {
-            throw new RuntimeException("Error during emulator client initialization", e);
+            throw new GlcdEmulatorClientException("Exception thrown during client initialization", e);
         }
     }
 
@@ -110,7 +111,7 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
                 transport.send((byte) MSG_START);
             super.sendBuffer();
         } catch (IOException e) {
-            log.error("Problem occured while transmitting message headers over network", e);
+            throw new GlcdEmulatorClientException("Exception thrown during sendBuffer() operation", e);
         }
     }
 
@@ -173,7 +174,8 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
                 }
             }
         } catch (IOException e) {
-            log.error("Error occured while trying to send u8g2 message", e);
+            throw new GlcdEmulatorClientException("Exception thrown during byte event processing", e);
+        } finally {
             reset();
         }
     }
