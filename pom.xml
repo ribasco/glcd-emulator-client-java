@@ -141,6 +141,9 @@
                             <includes>
                                 <include>**/*.java</include>
                             </includes>
+                            <excludes>
+                                <exclude>**/*Example.java</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                     <!-- JAVADOC Plugin -->
@@ -161,6 +164,11 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*Example.java</exclude>
+                            </excludes>
+                        </configuration>
                     </plugin>
                     <!-- GPG Plugin -->
                     <plugin>
@@ -258,12 +266,24 @@
                     <optimize>true</optimize>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>false</showWarnings>
+                    <excludes>
+                        <exclude>**/*Example.java</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -325,7 +345,7 @@
                 <version>3.0.1</version>
                 <configuration>
                     <excludes>
-                        <exclude>src/examples/**</exclude>
+                        <exclude>**/*Example.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -335,7 +355,7 @@
                 <version>3.0.1</version>
                 <configuration>
                     <excludes>
-                        <exclude>src/examples/**</exclude>
+                        <exclude>**/*Example.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
