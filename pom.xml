@@ -333,7 +333,7 @@
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <preparationGoals>clean install</preparationGoals>
-                    <tagNameFormat>glcd-client-@{project.version}</tagNameFormat>
+                    <tagNameFormat>glcdemu-client-@{project.version}</tagNameFormat>
                     <checkModificationExcludes>
                         <checkModificationExclude>pom.xml</checkModificationExclude>
                     </checkModificationExcludes>
