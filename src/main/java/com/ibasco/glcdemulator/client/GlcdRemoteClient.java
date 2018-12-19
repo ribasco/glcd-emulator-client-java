@@ -48,23 +48,29 @@ import java.util.Objects;
  *
  * @author Rafael Ibasco
  */
-public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
+public class GlcdRemoteClient extends GlcdBaseDriver implements Closeable {
 
-    private static final Logger log = LoggerFactory.getLogger(GlcdEmulatorClient.class);
+    private static final Logger log = LoggerFactory.getLogger(GlcdRemoteClient.class);
 
     private ByteBuffer buffer;
 
     private Transport transport;
 
-    protected static final int MSG_START = 0xFE;
+    static final int MSG_START = 0xFE;
 
-    protected static final int MSG_DC_0 = 0xE0;
+    private static final int MSG_DC_0 = 0xE0;
 
-    protected static final int MSG_DC_1 = 0xE8;
+    private static final int MSG_DC_1 = 0xE8;
 
-    protected static final int MSG_BYTE_SEND = 0xEC;
+    private static final int MSG_BYTE_SEND = 0xEC;
 
     private boolean debug = false;
+
+    private boolean emulated = false;
+
+    public GlcdRemoteClient(GlcdConfig config, Transport transpor) {
+        this(config, transpor, false);
+    }
 
     /**
      * Creates a new emulator client with the given transport
@@ -73,11 +79,22 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
      *         The {@link GlcdConfig} associated with this instance
      * @param transport
      *         The data {@link Transport} that is responsible for sending/receiving data to/from the emulator
+     * @param emulated
+     *         Set to <code>true</code> if the instructions should be sent to the host for processing. If false, only the display data will be sent. Instructions will be processed internally by the native driver.
      */
-    public GlcdEmulatorClient(GlcdConfig config, Transport transport) {
+    public GlcdRemoteClient(GlcdConfig config, Transport transport, boolean emulated) {
         super(config, true);
         this.debug = transport.getOption(GeneralOptions.DEBUG_OUTPUT, false);
+        this.emulated = emulated;
         initClient(transport);
+    }
+
+    private int calculateBufferSize() {
+        if (emulated)
+            return 1024;
+        int size = (getConfig().getDisplaySize().getDisplayWidth() * getConfig().getDisplaySize().getDisplayHeight()) / 8;
+        log.info("Calculated buffer size: {}", size);
+        return size;
     }
 
     /**
@@ -91,7 +108,7 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
         try {
             if (!debug)
                 transport.open();
-            buffer = ByteBuffer.allocate(1024).order(ByteOrder.LITTLE_ENDIAN);
+            buffer = ByteBuffer.allocate(calculateBufferSize()).order(ByteOrder.LITTLE_ENDIAN);
             initialize();
         } catch (GlcdDriverException | IOException e) {
             throw new GlcdEmulatorClientException("Exception thrown during client initialization", e);
@@ -99,7 +116,7 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
     }
 
     /** For unit-testing purposes only **/
-    GlcdEmulatorClient(GlcdConfig config, Transport transport, GlcdDriverAdapter adapter) {
+    GlcdRemoteClient(GlcdConfig config, Transport transport, GlcdDriverAdapter adapter) {
         super(config, true, null, adapter);
         initClient(transport);
     }
@@ -107,11 +124,27 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
     @Override
     public void sendBuffer() {
         try {
-            if (!debug)
+            if (!debug && emulated)
                 transport.send((byte) MSG_START);
             super.sendBuffer();
+            if (!emulated)
+                transmitBuffer();
         } catch (IOException e) {
             throw new GlcdEmulatorClientException("Exception thrown during sendBuffer() operation", e);
+        }
+    }
+
+    private void transmitBuffer() {
+        try {
+            byte[] data = getBuffer();
+            if (data != null && data.length > 0) {
+                buffer.rewind();
+                buffer.put(data);
+                buffer.flip();
+                transport.send(buffer);
+            }
+        } catch (IOException e) {
+            throw new GlcdEmulatorClientException("Exception thrown during transmitBuffer() operation", e);
         }
     }
 
@@ -148,6 +181,8 @@ public class GlcdEmulatorClient extends GlcdBaseDriver implements Closeable {
             debugEvents(event);
             return;
         }
+        if (!emulated)
+            return;
         try {
             switch (event.getMessage()) {
                 case U8X8_MSG_BYTE_START_TRANSFER:

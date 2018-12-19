@@ -56,7 +56,7 @@ class GlcdEmulatorClientTest {
     void testDrawOperation() {
         GlcdConfig config = new GlcdConfig();
         updateValidConfig(config);
-        GlcdEmulatorClient client = createClient(config);
+        GlcdRemoteClient client = createClient(config);
 
         /*doAnswer(invocation -> {
             System.out.println("Answer: " + invocation);
@@ -71,11 +71,11 @@ class GlcdEmulatorClientTest {
         ArgumentCaptor<Byte> byteArg = ArgumentCaptor.forClass(Byte.class);
         assertDoesNotThrow(() -> verify(mockTransport, times(1)).send(byteArg.capture()));
 
-        assertEquals(GlcdEmulatorClient.MSG_START, Byte.toUnsignedInt(byteArg.getValue()));
+        assertEquals(GlcdRemoteClient.MSG_START, Byte.toUnsignedInt(byteArg.getValue()));
     }
 
-    private GlcdEmulatorClient createClient(GlcdConfig config) {
-        return new GlcdEmulatorClient(config, mockTransport, mockAdapter);
+    private GlcdRemoteClient createClient(GlcdConfig config) {
+        return new GlcdRemoteClient(config, mockTransport, mockAdapter);
     }
 
     private void updateValidConfig(GlcdConfig config) {

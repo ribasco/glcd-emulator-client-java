@@ -24,7 +24,7 @@
  * =========================END==================================
  */
 
-import com.ibasco.glcdemulator.client.GlcdEmulatorClient;
+import com.ibasco.glcdemulator.client.GlcdRemoteClient;
 import com.ibasco.glcdemulator.client.net.GeneralOptions;
 import com.ibasco.glcdemulator.client.net.TcpTransporOptions;
 import com.ibasco.glcdemulator.client.net.TcpTransport;
@@ -55,7 +55,7 @@ public class GlcdClientTcpExample {
     private XBMData raspberryPiLogo;
 
     private GlcdClientTcpExample() throws Exception {
-        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("examples/raspberrypi-small.xbm").toURI();
+        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("raspberrypi-small.xbm").toURI();
         raspberryPiLogo = XBMUtils.decodeXbmFile(new File(resRaspberryPiLogo));
     }
 
@@ -66,7 +66,7 @@ public class GlcdClientTcpExample {
     private void run() throws Exception {
         //Configure GLCD
         GlcdConfig config = new GlcdConfig();
-        config.setDisplay(Glcd.ST7920.D_128x64); //Glcd.RA8835.D_320x240
+        config.setDisplay(Glcd.T6963.D_128x64); //Glcd.RA8835.D_320x240
         config.setBusInterface(GlcdBusInterface.PARALLEL_8080);
         config.setRotation(GlcdRotation.ROTATION_NONE);
 
@@ -77,10 +77,9 @@ public class GlcdClientTcpExample {
 
         AtomicBoolean shutdown = new AtomicBoolean(false);
 
-        try (GlcdEmulatorClient driver = new GlcdEmulatorClient(config, dataTransport)) {
+        try (GlcdRemoteClient driver = new GlcdRemoteClient(config, dataTransport)) {
             boolean show = true;
             long prevMillis = 0;
-            int ctr = 0;
             while (!shutdown.get()) {
                 driver.clearBuffer();
                 drawU8G2Logo(driver);
@@ -96,6 +95,7 @@ public class GlcdClientTcpExample {
                     drawRpiLogo(driver);
                 }
                 driver.sendBuffer();
+                Thread.sleep(20);
             }
         } catch (IOException e) {
             shutdown.set(true);
