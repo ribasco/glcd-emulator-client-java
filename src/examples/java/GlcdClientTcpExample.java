@@ -66,7 +66,7 @@ public class GlcdClientTcpExample {
     private void run() throws Exception {
         //Configure GLCD
         GlcdConfig config = new GlcdConfig();
-        config.setDisplay(Glcd.T6963.D_128x64); //Glcd.RA8835.D_320x240
+        config.setDisplay(Glcd.SSD1322.D_128x64_NHD); //Glcd.RA8835.D_320x240
         config.setBusInterface(GlcdBusInterface.PARALLEL_8080);
         config.setRotation(GlcdRotation.ROTATION_NONE);
 
@@ -80,6 +80,7 @@ public class GlcdClientTcpExample {
         try (GlcdRemoteClient driver = new GlcdRemoteClient(config, dataTransport)) {
             boolean show = true;
             long prevMillis = 0;
+            int xpos = 0;
             while (!shutdown.get()) {
                 driver.clearBuffer();
                 drawU8G2Logo(driver);
@@ -94,7 +95,12 @@ public class GlcdClientTcpExample {
                 if (show) {
                     drawRpiLogo(driver);
                 }
+                /*driver.setFont(GlcdFont.FONT_4X6_MR);
+                driver.drawString(xpos++,6, "HELLO WORLD");*/
                 driver.sendBuffer();
+
+                if (xpos > 64)
+                    xpos = 0;
                 Thread.sleep(20);
             }
         } catch (IOException e) {
