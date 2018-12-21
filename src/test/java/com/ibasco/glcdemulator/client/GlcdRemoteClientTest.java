@@ -33,18 +33,18 @@ import com.ibasco.ucgdisplay.drivers.glcd.GlcdPinMapConfig;
 import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdBusInterface;
 import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdPin;
 import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdRotation;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.ByteBuffer;
+
 @ExtendWith(MockitoExtension.class)
-class GlcdEmulatorClientTest {
+class GlcdRemoteClientTest {
 
     @Mock
     private Transport mockTransport;
@@ -65,13 +65,21 @@ class GlcdEmulatorClientTest {
             return null;
         }).when(mockAdapter).sendBuffer();*/
 
+        byte[] data = new byte[1024];
+
+        when(mockAdapter.getBuffer()).thenReturn(data);
+
         client.drawBox(0, 10, 20, 30);
         client.sendBuffer();
 
-        ArgumentCaptor<Byte> byteArg = ArgumentCaptor.forClass(Byte.class);
+        ArgumentCaptor<ByteBuffer> byteArg = ArgumentCaptor.forClass(ByteBuffer.class);
+
+        verify(mockAdapter, times(1)).getBuffer();
         assertDoesNotThrow(() -> verify(mockTransport, times(1)).send(byteArg.capture()));
 
-        assertEquals(GlcdRemoteClient.MSG_START, Byte.toUnsignedInt(byteArg.getValue()));
+        assertFalse(client.isEmulated());
+        assertNotNull(byteArg.getValue());
+        assertArrayEquals(data, byteArg.getValue().array());
     }
 
     private GlcdRemoteClient createClient(GlcdConfig config) {

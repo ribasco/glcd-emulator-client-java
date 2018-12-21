@@ -89,6 +89,10 @@ public class GlcdRemoteClient extends GlcdBaseDriver implements Closeable {
         initClient(transport);
     }
 
+    public boolean isEmulated() {
+        return emulated;
+    }
+
     private int calculateBufferSize() {
         if (emulated)
             return 1024;
