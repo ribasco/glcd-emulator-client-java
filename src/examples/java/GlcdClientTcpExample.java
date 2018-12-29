@@ -55,7 +55,7 @@ public class GlcdClientTcpExample {
     private XBMData raspberryPiLogo;
 
     private GlcdClientTcpExample() throws Exception {
-        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("raspberrypi-small.xbm").toURI();
+        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("examples/raspberrypi-small.xbm").toURI();
         raspberryPiLogo = XBMUtils.decodeXbmFile(new File(resRaspberryPiLogo));
     }
 
@@ -66,7 +66,7 @@ public class GlcdClientTcpExample {
     private void run() throws Exception {
         //Configure GLCD
         GlcdConfig config = new GlcdConfig();
-        config.setDisplay(Glcd.SSD1322.D_128x64_NHD); //Glcd.RA8835.D_320x240
+        config.setDisplay(Glcd.SSD1306.D_128x64_NONAME); //Glcd.RA8835.D_320x240
         config.setBusInterface(GlcdBusInterface.PARALLEL_8080);
         config.setRotation(GlcdRotation.ROTATION_NONE);
 
@@ -101,7 +101,7 @@ public class GlcdClientTcpExample {
 
                 if (xpos > 64)
                     xpos = 0;
-                Thread.sleep(20);
+                Thread.sleep(10);
             }
         } catch (IOException e) {
             shutdown.set(true);
@@ -113,7 +113,7 @@ public class GlcdClientTcpExample {
         if (count > 100)
             count = 0;
         driver.setFont(GlcdFont.FONT_ASTRAGAL_NBP_TR);
-        driver.drawString(xpos++, 40, "Count: " + count++);
+        driver.drawString(xpos++, 40, "Hello from Java!");
         if (xpos == 192)
             xpos = 0;
     }
