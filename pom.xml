@@ -4,7 +4,7 @@
 
     <groupId>com.ibasco.glcdemulator</groupId>
     <artifactId>glcd-emulator-client</artifactId>
-    <version>1.0.0-alpha-SNAPSHOT</version>
+    <version>1.0.1-alpha-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>GLCD Emulator Client</name>
     <description>Client library for the glcd emulator project</description>
