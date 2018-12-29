@@ -2,7 +2,7 @@
  * ========================START=================================
  * Organization: Rafael Ibasco
  * Project: GLCD Emulator Client
- * Filename: GlcdEmulatorClient.java
+ * Filename: GlcdRemoteClient.java
  *
  * ---------------------------------------------------------
  * %%
