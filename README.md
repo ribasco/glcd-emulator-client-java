@@ -7,9 +7,21 @@ Java client library for glcd-emulator (See: https://github.com/ribasco/glcd-emul
 
 # Installation
 
+From source
+
+```bash
+git clone https://github.com/ribasco/glcd-emulator-client-java.git`
+
+cd glcd-emulator-client-java
+
+mvn install
+```
+
+# Usage
+
 Add the following dependency to your maven pom.xml file
 
-```
+```xml
 <dependency>
   <groupId>com.ibasco.glcdemulator</groupId>
   <artifactId>glcd-emulator-client</artifactId>
@@ -17,6 +29,12 @@ Add the following dependency to your maven pom.xml file
 </dependency>
 ```
 
-# Usage
+# Example 
 
-Refer to the [TCP example](https://github.com/ribasco/glcd-emulator-client-java/blob/master/src/examples/java/GlcdClientTcpExample.java)
+Refer to the [TCP example code](https://github.com/ribasco/glcd-emulator-client-java/blob/master/src/examples/java/GlcdClientTcpExample.java)
+
+To run the example via maven:
+
+```bash
+mvn clean compile exec:java -Dexec.mainClass="GlcdClientTcpExample"
+```
