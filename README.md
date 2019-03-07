@@ -10,7 +10,7 @@ Java client library for glcd-emulator (See: https://github.com/ribasco/glcd-emul
 From source
 
 ```bash
-git clone https://github.com/ribasco/glcd-emulator-client-java.git`
+git clone https://github.com/ribasco/glcd-emulator-client-java.git
 
 cd glcd-emulator-client-java
 
