@@ -1,14 +1,9 @@
 language: java
 
-addons:
-  apt:
-    packages:
-    - openjdk11
-
 sudo: false
 
 jdk:
-- oraclejdk8
+- openjdk11
 
 cache:
   directories:
