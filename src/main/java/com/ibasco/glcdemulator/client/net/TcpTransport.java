@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Objects;
@@ -64,11 +65,10 @@ public class TcpTransport implements Transport {
 
     @Override
     public synchronized void send(byte data) throws IOException {
-        ByteBuffer buf = (ByteBuffer)tmp;
-        buf.clear();
-        buf.put(data);
-        buf.flip();
-        channel.write(buf);
+        ((Buffer)tmp).clear(); //for backwards compatibility
+        tmp.put(data);
+        ((Buffer)tmp).flip();
+        channel.write(tmp);
     }
 
     @Override
