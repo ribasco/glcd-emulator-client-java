@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
@@ -142,9 +143,9 @@ public class GlcdRemoteClient extends GlcdBaseDriver implements Closeable {
         try {
             byte[] data = getBuffer();
             if (data != null && data.length > 0) {
-                buffer.rewind();
+                ((Buffer)buffer).rewind();
                 buffer.put(data);
-                buffer.flip();
+                ((Buffer)buffer).flip();
                 transport.send(buffer);
             }
         } catch (IOException e) {
@@ -193,7 +194,7 @@ public class GlcdRemoteClient extends GlcdBaseDriver implements Closeable {
                     reset();
                     break;
                 case U8X8_MSG_BYTE_END_TRANSFER:
-                    buffer.flip();
+                    ((Buffer)buffer).flip();
                     transport.send(buffer);
                     break;
                 case U8X8_MSG_BYTE_SET_DC:
