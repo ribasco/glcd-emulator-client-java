@@ -31,10 +31,9 @@ import com.ibasco.glcdemulator.client.net.TcpTransport;
 import com.ibasco.glcdemulator.client.net.Transport;
 import com.ibasco.ucgdisplay.drivers.glcd.Glcd;
 import com.ibasco.ucgdisplay.drivers.glcd.GlcdConfig;
-import com.ibasco.ucgdisplay.drivers.glcd.U8g2DisplayDriver;
-import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdBusInterface;
-import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdFont;
-import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdRotation;
+import com.ibasco.ucgdisplay.drivers.glcd.GlcdConfigBuilder;
+import com.ibasco.ucgdisplay.drivers.glcd.GlcdDisplayDriver;
+import com.ibasco.ucgdisplay.drivers.glcd.enums.*;
 import com.ibasco.ucgdisplay.drivers.glcd.utils.XBMData;
 import com.ibasco.ucgdisplay.drivers.glcd.utils.XBMUtils;
 import org.slf4j.Logger;
@@ -55,7 +54,7 @@ public class GlcdClientTcpExample {
     private XBMData raspberryPiLogo;
 
     private GlcdClientTcpExample() throws Exception {
-        URI resRaspberryPiLogo = this.getClass().getClassLoader().getResource("examples/raspberrypi-small.xbm").toURI();
+        URI resRaspberryPiLogo = this.getClass().getResource("/raspberrypi-small.xbm").toURI();
         raspberryPiLogo = XBMUtils.decodeXbmFile(new File(resRaspberryPiLogo));
     }
 
@@ -65,10 +64,7 @@ public class GlcdClientTcpExample {
 
     private void run() throws Exception {
         //Configure GLCD
-        GlcdConfig config = new GlcdConfig();
-        config.setDisplay(Glcd.SSD1306.D_128x64_NONAME); //Glcd.RA8835.D_320x240
-        config.setBusInterface(GlcdBusInterface.PARALLEL_8080);
-        config.setRotation(GlcdRotation.ROTATION_NONE);
+        GlcdConfigBuilder configBuilder = GlcdConfigBuilder.create(Glcd.SSD1306.D_128x64_NONAME, GlcdBusInterface.PARALLEL_8080);
 
         Transport dataTransport = new TcpTransport();
         dataTransport.setOption(TcpTransporOptions.IP_ADDRESS, "192.168.1.24");
@@ -77,7 +73,7 @@ public class GlcdClientTcpExample {
 
         AtomicBoolean shutdown = new AtomicBoolean(false);
 
-        try (GlcdRemoteClient driver = new GlcdRemoteClient(config, dataTransport)) {
+        try (GlcdRemoteClient driver = new GlcdRemoteClient(configBuilder.build(), dataTransport)) {
             boolean show = true;
             long prevMillis = 0;
             int xpos = 0;
@@ -109,7 +105,7 @@ public class GlcdClientTcpExample {
         }
     }
 
-    private void drawText(U8g2DisplayDriver driver) {
+    private void drawText(GlcdDisplayDriver driver) {
         if (count > 100)
             count = 0;
         driver.setFont(GlcdFont.FONT_ASTRAGAL_NBP_TR);
@@ -118,24 +114,24 @@ public class GlcdClientTcpExample {
             xpos = 0;
     }
 
-    private void drawRpiLogo(U8g2DisplayDriver driver) {
-        driver.setBitmapMode(1);
+    private void drawRpiLogo(GlcdDisplayDriver driver) {
+        driver.setBitmapMode(GlcdBitmapMode.TRANSPARENT);
         if (raspberryPiLogo != null)
             driver.drawXBM(40, -5, 95, 74, raspberryPiLogo.getData());
     }
 
-    private void drawU8G2Logo(U8g2DisplayDriver driver) {
-        driver.setFontMode(1);
+    private void drawU8G2Logo(GlcdDisplayDriver driver) {
+        driver.setFontMode(GlcdFontMode.TRANSPARENT);
 
-        driver.setFontDirection(0);
+        driver.setFontDirection(GlcdFontDirection.LEFT_TO_RIGHT);
         driver.setFont(GlcdFont.FONT_INB16_MF);
         driver.drawString(0, 22, "U");
 
-        driver.setFontDirection(1);
+        driver.setFontDirection(GlcdFontDirection.TOP_TO_DOWN);
         driver.setFont(GlcdFont.FONT_INB19_MN);
         driver.drawString(14, 8, "8");
 
-        driver.setFontDirection(0);
+        driver.setFontDirection(GlcdFontDirection.LEFT_TO_RIGHT);
         driver.setFont(GlcdFont.FONT_INB16_MF);
         driver.drawString(36, 22, "g");
         driver.drawString(48, 22, "2");

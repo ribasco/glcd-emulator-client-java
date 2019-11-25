@@ -26,10 +26,7 @@
 package com.ibasco.glcdemulator.client;
 
 import com.ibasco.glcdemulator.client.net.Transport;
-import com.ibasco.ucgdisplay.drivers.glcd.Glcd;
-import com.ibasco.ucgdisplay.drivers.glcd.GlcdConfig;
-import com.ibasco.ucgdisplay.drivers.glcd.GlcdDriverAdapter;
-import com.ibasco.ucgdisplay.drivers.glcd.GlcdPinMapConfig;
+import com.ibasco.ucgdisplay.drivers.glcd.*;
 import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdBusInterface;
 import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdPin;
 import com.ibasco.ucgdisplay.drivers.glcd.enums.GlcdRotation;
@@ -54,9 +51,9 @@ class GlcdRemoteClientTest {
 
     @Test
     void testDrawOperation() {
-        GlcdConfig config = new GlcdConfig();
-        updateValidConfig(config);
-        GlcdRemoteClient client = createClient(config);
+        GlcdConfigBuilder configBuilder = GlcdConfigBuilder.create(Glcd.ST7920.D_128x64, GlcdBusInterface.SPI_HW_4WIRE_ST7920);
+        updateValidConfig(configBuilder);
+        GlcdRemoteClient client = createClient(configBuilder.build());
 
         /*doAnswer(invocation -> {
             System.out.println("Answer: " + invocation);
@@ -86,10 +83,8 @@ class GlcdRemoteClientTest {
         return new GlcdRemoteClient(config, mockTransport, mockAdapter);
     }
 
-    private void updateValidConfig(GlcdConfig config) {
-        config.setDisplay(Glcd.ST7920.D_128x64);
-        config.setBusInterface(GlcdBusInterface.SPI_HW_4WIRE_ST7920);
-        config.setRotation(GlcdRotation.ROTATION_NONE);
-        config.setPinMapConfig(new GlcdPinMapConfig().map(GlcdPin.SPI_MOSI, 10).map(GlcdPin.SPI_CLOCK, 11));
+    private void updateValidConfig(GlcdConfigBuilder config) {
+        config.option(GlcdOption.ROTATION, GlcdRotation.ROTATION_NONE);
+        config.pinMap(new GlcdPinMapConfig().map(GlcdPin.SPI_MOSI, 10).map(GlcdPin.SPI_CLOCK, 11));
     }
 }
