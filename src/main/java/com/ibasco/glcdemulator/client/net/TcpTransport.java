@@ -64,10 +64,11 @@ public class TcpTransport implements Transport {
 
     @Override
     public synchronized void send(byte data) throws IOException {
-        tmp.clear();
-        tmp.put(data);
-        tmp.flip();
-        channel.write(tmp);
+        ByteBuffer buf = (ByteBuffer)tmp;
+        buf.clear();
+        buf.put(data);
+        buf.flip();
+        channel.write(buf);
     }
 
     @Override
