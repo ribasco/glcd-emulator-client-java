@@ -3,7 +3,7 @@ language: java
 addons:
   apt:
     packages:
-    - oracle-java8-installer
+    - openjdk11
 
 sudo: false
 
