@@ -11,7 +11,7 @@ cache:
 
 before_install:
 - if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then openssl aes-256-cbc -K $encrypted_314a17b7024c_key -iv $encrypted_314a17b7024c_iv -in scripts/travis.enc -out scripts/travis.dec -d; fi
-- gpg2 --import scripts/travis.dec
+- gpg2 --batch --passphrase ${GPG_PASSPHRASE} --import scripts/travis.dec
 
 install:
 - mvn --settings scripts/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
